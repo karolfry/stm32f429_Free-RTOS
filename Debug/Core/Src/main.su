@@ -1,0 +1,7 @@
+main.c:82:5:main	8	static
+main.c:159:6:SystemClock_Config	88	static
+main.c:203:13:MX_GPIO_Init	64	static
+main.c:466:6:StartBlink01	16	static
+main.c:485:6:StartBlink02	16	static
+main.c:505:6:HAL_TIM_PeriodElapsedCallback	16	static
+main.c:522:6:Error_Handler	4	static
