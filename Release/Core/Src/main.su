@@ -1,0 +1,7 @@
+main.c:515:6:StartBlink01	8	static
+main.c:534:6:StartBlink02	8	static
+main.c:553:6:StartTask03	8	static
+main.c:175:6:SystemClock_Config	96	static
+main.c:94:5:main	80	static
+main.c:573:6:HAL_TIM_PeriodElapsedCallback	0	static
+main.c:590:6:Error_Handler	0	static

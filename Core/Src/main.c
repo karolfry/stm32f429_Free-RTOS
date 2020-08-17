@@ -21,6 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "string.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -42,6 +43,8 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+UART_HandleTypeDef huart5;
+
 /* Definitions for blink01 */
 osThreadId_t blink01Handle;
 const osThreadAttr_t blink01_attributes = {
@@ -56,15 +59,24 @@ const osThreadAttr_t Blink02_attributes = {
   .priority = (osPriority_t) osPriorityLow,
   .stack_size = 128 * 4
 };
+/* Definitions for uart_Send */
+osThreadId_t uart_SendHandle;
+const osThreadAttr_t uart_Send_attributes = {
+  .name = "uart_Send",
+  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 128 * 4
+};
 /* USER CODE BEGIN PV */
-
+char* str_text = "Hello World\n\r";
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_UART5_Init(void);
 void StartBlink01(void *argument);
 void StartBlink02(void *argument);
+void StartTask03(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -103,6 +115,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_UART5_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -132,6 +145,9 @@ int main(void)
 
   /* creation of Blink02 */
   Blink02Handle = osThreadNew(StartBlink02, NULL, &Blink02_attributes);
+
+  /* creation of uart_Send */
+  uart_SendHandle = osThreadNew(StartTask03, NULL, &uart_Send_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -193,6 +209,39 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief UART5 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_UART5_Init(void)
+{
+
+  /* USER CODE BEGIN UART5_Init 0 */
+
+  /* USER CODE END UART5_Init 0 */
+
+  /* USER CODE BEGIN UART5_Init 1 */
+
+  /* USER CODE END UART5_Init 1 */
+  huart5.Instance = UART5;
+  huart5.Init.BaudRate = 115200;
+  huart5.Init.WordLength = UART_WORDLENGTH_8B;
+  huart5.Init.StopBits = UART_STOPBITS_1;
+  huart5.Init.Parity = UART_PARITY_NONE;
+  huart5.Init.Mode = UART_MODE_TX_RX;
+  huart5.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart5.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart5) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN UART5_Init 2 */
+
+  /* USER CODE END UART5_Init 2 */
+
 }
 
 /**
@@ -492,6 +541,25 @@ void StartBlink02(void *argument)
 	osDelay(5000);
   }
   /* USER CODE END StartBlink02 */
+}
+
+/* USER CODE BEGIN Header_StartTask03 */
+/**
+* @brief Function implementing the uart_Send thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTask03 */
+void StartTask03(void *argument)
+{
+  /* USER CODE BEGIN StartTask03 */
+  /* Infinite loop */
+  for(;;)
+  {
+	HAL_UART_Transmit(&huart5, (uint8_t*)str_text , strlen(str_text), 1000);
+    osDelay(5000);
+  }
+  /* USER CODE END StartTask03 */
 }
 
  /**
